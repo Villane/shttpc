@@ -4,6 +4,7 @@ import org.apache.http.NameValuePair
 import org.apache.http.message.BasicNameValuePair
 import org.apache.http.HttpResponse
 import java.io.ByteArrayOutputStream
+import scala.xml.NodeSeq
 
 object Preamble {
   val DefaultEncoding = "UTF-8"
@@ -64,5 +65,7 @@ object Preamble {
 
   implicit def site2url(site: Site) = site.url
   implicit def url2site(url: String) = Site(url)
+
+  implicit def betterXPath(node: NodeSeq) = BetterXPath.betterXPath(node)
 
 }

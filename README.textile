@@ -1,4 +1,4 @@
-h1. Simple HTTP Client
+h2. Simple HTTP Client
 
 Wraps Apache HttpClient 4.0 to provide an easy to use Scala API. Java users have some benefits as well.
 
@@ -11,7 +11,9 @@ The project name *shttpc* is pronounced like ShittyPC.
 
 A "Maven repository":http://villane.org/mavenrepo/org/villane/shttpc/ at villane.org contains both sources and binaries. 
 
-h2. Usage examples (Scala)
+h3. Usage examples (Scala)
+
+h4. GET with params Map, comprehensions with NekoHTML parsed to Scala's XML Nodes
 
 <pre><code>
 import org.villane.shttpc._
@@ -46,4 +48,14 @@ object MetacriticTest {
     println(feelingLucky("Brutal Legend").score)
   }
 }
+</code></pre>
+
+h4. Alternate comprehension with SHTTPC's XPath support
+
+Note that XPath support is very limited, basically only expressions like the one below are supported.
+<pre><code>
+    val res = for {
+      p <- html / "BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P"
+      if (p.text.startsWith("1."))
+    } yield p
 </code></pre>
