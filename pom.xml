@@ -3,12 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.villane.shttpc</groupId>
 	<artifactId>shttpc</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>Simple HTTP Client</name>
 	<description>Simple HTTP Client, wraps Apache HttpClient 4.0 to provide an easy to use Scala API</description>
 	<url>http://github.com/Villane/shttpc</url>
 	<scm>
-		<connection>scm:git:git://github.com/Villane/scalabox2d.git</connection>
+		<url>http://github.com/Villane/shttpc/tree/master</url>
+		<connection>scm:git:git://github.com/Villane/shttpc.git</connection>
 		<developerConnection>scm:git:git@github.com:Villane/shttpc.git</developerConnection>
 	</scm>
 	<dependencies>
@@ -71,6 +72,25 @@
 					</args>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	<distributionManagement>
+		<repository>
+			<id>villane.org/mavenrepo</id>
+			<name>http://villane.org/mavenrepo repository</name>
+			<url>scp://villane.org/home/villane/villane.org/mavenrepo</url>
+		</repository>
+	</distributionManagement>
 </project>

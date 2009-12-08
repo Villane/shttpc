@@ -9,6 +9,8 @@ This software is distributed under the MIT license. See the file License.txt for
 
 The project name *shttpc* is pronounced like ShittyPC.
 
+Maven repository contains both sources and binaries: http://villane.org/mavenrepo/org/villane/shttpc/
+
 h2. Usage examples (Scala)
 
 <pre><code>
