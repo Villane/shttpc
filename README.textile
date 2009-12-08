@@ -1,11 +1,13 @@
 h1. Simple HTTP Client
 
-Wraps Apache HttpClient 4.0 to provide an easy to use Scala API. Java users can use some of the benefits as well.
+Wraps Apache HttpClient 4.0 to provide an easy to use Scala API. Java users have some benefits as well.
 
 Copyright (c) 2009, Erkki Lindpere
 All rights reserved.
 
 This software is distributed under the MIT license. See the file License.txt for the full text.
+
+The project name *shttpc* is pronounced like ShittyPC.
 
 h2. Usage examples (Scala)
 
