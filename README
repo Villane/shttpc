@@ -1,6 +1,44 @@
-Simple HTTP Client, wraps Apache HttpClient 4.0 to provide an easy to use Scala API
+h1. Simple HTTP Client
+Wraps Apache HttpClient 4.0 to provide an easy to use Scala API
 
 Copyright (c) 2009, Erkki Lindpere
 All rights reserved.
 
 This software is distributed under the MIT license. See the file License.txt for the full text.
+
+h2. Usage examples (Scala)
+
+<pre><code>
+import org.villane.shttpc._
+import org.villane.shttpc.Preamble._
+
+object MetacriticTest {
+  val http = new Http
+
+  case class Result(name: String, url: String, score: Int)
+  
+  def feelingLucky(query: String) = {
+    val html = http.get("http://www.metacritic.com/search/process" ? Map(
+      "sort" -> "relevance",
+      "termtype" -> "all",
+      "ts" -> query,
+      "ty" -> "0"
+    )).getHtml
+
+    val res = for {
+      div <- html \ "BODY" \ "DIV"
+      if (div \ "@id" == "pagecontainer")
+      col <- div \ "DIV" \ "TABLE" \ "TBODY" \ "TR" \ "TD"
+      if (col \ "@id" == "rightcolumn")
+      p <- col \ "P"
+      if (p.text.startsWith("1."))
+    } yield p
+
+    Result(res \ "A" text, res \ "A" \ "@href" text, (res \ "SPAN" text).toInt)
+  }
+
+  def main(sgra: Array[String]) = {
+    println(feelingLucky("Brutal Legend").score)
+  }
+}
+</code></pre>
