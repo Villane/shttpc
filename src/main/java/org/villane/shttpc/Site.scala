@@ -24,7 +24,7 @@ case class Site(url: String) {
     sb.toString
   }
 
-  private def encode(s: String) = java.net.URLEncoder.encode(s, "UTF-8")
+  private def encode(s: String) = java.net.URLEncoder.encode(s, Preamble.DefaultEncoding)
 
   override def toString = url
 }

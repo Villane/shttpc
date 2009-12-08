@@ -56,11 +56,13 @@ object Preamble {
     jm
   }
 
-  implicit def scalaMap2nameValuePair[K,V](sm: Map[String,String]): java.util.List[NameValuePair] = {
+  implicit def scalaMap2nameValuePair(sm: Map[String,String]): java.util.List[NameValuePair] = {
     val nvp = new java.util.ArrayList[NameValuePair]
     for ((k,v) <- sm) nvp.add(new BasicNameValuePair(k,v))
     nvp
   }
 
   implicit def site2url(site: Site) = site.url
+  implicit def url2site(url: String) = Site(url)
+
 }
