@@ -1,0 +1,6 @@
+Simple HTTP Client, wraps Apache HttpClient 4.0 to provide an easy to use Scala API
+
+Copyright (c) 2009, Erkki Lindpere
+All rights reserved.
+
+This software is distributed under the MIT license. See the file License.txt for the full text.
