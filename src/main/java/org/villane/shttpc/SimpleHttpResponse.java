@@ -8,10 +8,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -44,7 +42,7 @@ public class SimpleHttpResponse {
 	}
 
 	public String asText() throws IOException {
-		String enc = declaredEncoding();
+		String enc = declaredCharSet();
 		return enc != null ? asText(enc) : asText(DefaultEncoding);
 	}
 
@@ -68,16 +66,8 @@ public class SimpleHttpResponse {
 		return parser.getDocument();
 	}
 
-	public String declaredEncoding() {
-		Header cTypeH = response.getEntity().getContentType();
-		for (HeaderElement elem : cTypeH.getElements()) {
-			for (NameValuePair param : elem.getParameters()) {
-				if ("charset".equals(param.getName())) {
-					return param.getValue();
-				}
-			}
-		}
-		return null;
+	public String declaredCharSet() {
+		return EntityUtils.getContentCharSet(response.getEntity());
 	}
 
 	public void consume() throws IOException {

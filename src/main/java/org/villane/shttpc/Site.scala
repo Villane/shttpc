@@ -1,7 +1,6 @@
 package org.villane.shttpc
 
 case class Site(url: String) {
-  val DefaultURIEncoding = "UTF-8"
 
   def /(path: String) = {
     val sb = new StringBuilder(url)
@@ -18,14 +17,12 @@ case class Site(url: String) {
     var first = true
     for ((name, value) <- params) {
       if (first) first = false else sb.append("&")
-      sb.append(encode(name))
+      sb.append(Http.uriEncode(name))
       sb.append("=")
-      sb.append(if (value != null) encode(value) else "")
+      sb.append(if (value != null) Http.uriEncode(value) else "")
     }
     sb.toString
   }
-
-  private def encode(s: String) = java.net.URLEncoder.encode(s, DefaultURIEncoding)
 
   override def toString = url
 }

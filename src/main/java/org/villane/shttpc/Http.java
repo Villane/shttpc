@@ -1,6 +1,8 @@
 package org.villane.shttpc;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Simplifies the use of Apache HTTP Client.
@@ -20,8 +23,10 @@ import org.apache.http.message.BasicNameValuePair;
  * @author erkki.lindpere
  */
 public class Http {
+	public static String DefaultPostEncoding = "UTF-8";
+	public static String DefaultURIEncoding = "UTF-8";
+
 	public final HttpClient client;
-	public static String postEncoding = "UTF-8";
 
 	public Http() {
 		this.client = new DefaultHttpClient();
@@ -41,17 +46,49 @@ public class Http {
 		return new SimpleHttpResponse(client.execute(get));
 	}
 
-	public SimpleHttpResponse post(String uri, Map<String, String> params)
+	public SimpleHttpResponse get(String uri, Object... params)
+			throws ClientProtocolException, IOException {
+		HttpGet get = new HttpGet(formatURI(uri, params));
+		return new SimpleHttpResponse(client.execute(get));
+	}
+
+	public SimpleHttpResponse post(String uri, Object[] uriParams,
+			Map<String, String> postParams) throws ClientProtocolException,
+			IOException {
+		return post(formatURI(uri, uriParams), postParams);
+	}
+
+	public SimpleHttpResponse post(String uri, Map<String, String> postParams)
 			throws ClientProtocolException, IOException {
 		List<NameValuePair> paramsList = new ArrayList<NameValuePair>();
-		for (Map.Entry<String, String> param : params.entrySet()) {
+		for (Map.Entry<String, String> param : postParams.entrySet()) {
 			paramsList.add(new BasicNameValuePair(param.getKey(), param
 					.getValue()));
 		}
 		HttpPost post = new HttpPost(uri);
 		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramsList,
-				postEncoding);
+				DefaultPostEncoding);
 		post.setEntity(entity);
 		return new SimpleHttpResponse(client.execute(post));
+	}
+
+	protected static String formatURI(String uri, Object... params) {
+		if (params.length > 0) {
+			String[] encodedParams = new String[params.length];
+			for (int i = 0; i < params.length; i++) {
+				encodedParams[i] = uriEncode(params[i].toString());
+			}
+			return MessageFormatter.arrayFormat(uri, encodedParams);
+		}
+		return uri;
+	}
+
+	@SuppressWarnings("deprecation")
+	protected static String uriEncode(String value) {
+		try {
+			return URLEncoder.encode(value, DefaultURIEncoding);
+		} catch (UnsupportedEncodingException e) {
+			return URLEncoder.encode(value);
+		}
 	}
 }
