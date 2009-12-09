@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.villane.shttpc</groupId>
 	<artifactId>shttpc</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<name>Simple HTTP Client</name>
 	<description>Simple HTTP Client, wraps Apache HttpClient 4.0 to provide an easy to use Scala API</description>
 	<url>http://github.com/Villane/shttpc</url>
