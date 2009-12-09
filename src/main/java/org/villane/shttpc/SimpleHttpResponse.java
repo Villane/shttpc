@@ -4,10 +4,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.cyberneko.html.parsers.DOMParser;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class SimpleHttpResponse {
 	public static final String DefaultEncoding = "UTF-8";
@@ -38,6 +46,26 @@ public class SimpleHttpResponse {
 	public String asText() throws IOException {
 		String enc = declaredEncoding();
 		return enc != null ? asText(enc) : asText(DefaultEncoding);
+	}
+
+	public Document asDomXml() throws IOException,
+			ParserConfigurationException, SAXException {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document doc = db.parse(response.getEntity().getContent());
+		response.getEntity().consumeContent();
+		return doc;
+	}
+
+	public Document asDomHtml() throws IOException,
+			ParserConfigurationException, SAXException {
+		DOMParser parser = new DOMParser();
+		parser.setProperty(
+				"http://apache.org/xml/properties/dom/document-class-name",
+				"org.apache.html.dom.HTMLDocumentImpl");
+		parser.parse(new InputSource(response.getEntity().getContent()));
+		response.getEntity().consumeContent();
+		return parser.getDocument();
 	}
 
 	public String declaredEncoding() {

@@ -31,7 +31,7 @@ public class Http {
 		this.client = client;
 	}
 
-	public static Http trustingInstace() {
+	public static Http newTrustingInstace() {
 		return new Http(new TrustingHttpClient());
 	}
 
