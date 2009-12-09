@@ -86,14 +86,23 @@ import org.xml.sax.SAXException;
 
 public class MetacriticTestJava {
 
-	public static void main(String[] args) throws ClientProtocolException, IOException, ParserConfigurationException, SAXException, XPathExpressionException {
+	public static void main(String[] args) throws ClientProtocolException, IOException,
+			ParserConfigurationException, SAXException, XPathExpressionException {
 		Http http = new Http();
 		String query = "Brutal Legend";
-		SimpleHttpResponse response = http.get("http://www.metacritic.com/search/process?sort=relevance&termtype=all&ts=" + URLEncoder.encode(query, "UTF-8") + "&ty=0");
+		SimpleHttpResponse response = http.get(
+			"http://www.metacritic.com/search/process?sort=relevance&termtype=all&ts="
+			 + URLEncoder.encode(query, "UTF-8")
+			 + "&ty=0"
+		);
 		Document html = response.asDomHtml();
 		XPathFactory factory = XPathFactory.newInstance();
 		XPath xPath = factory.newXPath();
-		NodeList nl = (NodeList) xPath.evaluate("/HTML/BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P", html, XPathConstants.NODESET);
+		NodeList nl = (NodeList) xPath.evaluate(
+			"/HTML/BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P",
+			html,
+			XPathConstants.NODESET
+		);
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			if (node.getTextContent().startsWith("1.")) {
