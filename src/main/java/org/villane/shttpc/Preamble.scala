@@ -7,49 +7,21 @@ import java.io.ByteArrayOutputStream
 import scala.xml.NodeSeq
 
 object Preamble {
-  val DefaultEncoding = "UTF-8"
-
-  class HttpResponseExtentions(val r: HttpResponse) {
-
-    def getBytes = {
-      val buf = new ByteArrayOutputStream
-      r.getEntity writeTo buf
-      r.getEntity.consumeContent
-      buf.toByteArray
-    }
-
-    def getText(encoding: String): String = new String(getBytes, encoding)
-
-    def getText: String = declaredEncoding match {
-      case Some(encoding) => getText(encoding)
-      case None => getText(DefaultEncoding)
-    }
-
-    def declaredEncoding = {
-      val cTypeH = r.getEntity.getContentType
-      if (cTypeH != null)
-        ";charset=(.*)".r findFirstMatchIn cTypeH.getValue map (_.group(1))
-      else
-        None
-    }
-
-    def getXml = {
-      val xml = scala.xml.XML.load(r.getEntity.getContent)
-      consume
+  class RichHttpResponse(val response: SimpleHttpResponse) {
+    def asXml = {
+      val xml = scala.xml.XML.load(response.asInputStream)
+      response.consume
       xml
     }
 
-    def getHtml = {
-      val xml = NekoHTML.load(r.getEntity.getContent)
-      consume
+    def asHtml = {
+      val xml = NekoHTML.load(response.asInputStream)
+      response.consume
       xml
     }
-
-    def consume = r.getEntity.consumeContent
-
   }
 
-  implicit def httpResponseExtentions(r: HttpResponse) = new HttpResponseExtentions(r)
+  implicit def richHttpResponse(r: SimpleHttpResponse) = new RichHttpResponse(r)
 
   implicit def scala2javaMap[K,V](sm: Map[K,V]): java.util.Map[K,V] = {
     val jm = new java.util.HashMap[K,V]

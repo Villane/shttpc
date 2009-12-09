@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -36,13 +35,13 @@ public class Http {
 		return new Http(new TrustingHttpClient());
 	}
 
-	public HttpResponse get(String uri) throws ClientProtocolException,
+	public SimpleHttpResponse get(String uri) throws ClientProtocolException,
 			IOException {
 		HttpGet get = new HttpGet(uri);
-		return client.execute(get);
+		return new SimpleHttpResponse(client.execute(get));
 	}
 
-	public HttpResponse post(String uri, Map<String, String> params)
+	public SimpleHttpResponse post(String uri, Map<String, String> params)
 			throws ClientProtocolException, IOException {
 		List<NameValuePair> paramsList = new ArrayList<NameValuePair>();
 		for (Map.Entry<String, String> param : params.entrySet()) {
@@ -53,6 +52,6 @@ public class Http {
 		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramsList,
 				postEncoding);
 		post.setEntity(entity);
-		return client.execute(post);
+		return new SimpleHttpResponse(client.execute(post));
 	}
 }
