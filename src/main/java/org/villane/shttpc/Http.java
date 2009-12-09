@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -48,8 +49,7 @@ public class Http {
 
 	public SimpleHttpResponse get(String uri, Object... params)
 			throws ClientProtocolException, IOException {
-		HttpGet get = new HttpGet(formatURI(uri, params));
-		return new SimpleHttpResponse(client.execute(get));
+		return get(formatURI(uri, params));
 	}
 
 	public SimpleHttpResponse post(String uri, Object[] uriParams,
@@ -70,6 +70,17 @@ public class Http {
 				DefaultPostEncoding);
 		post.setEntity(entity);
 		return new SimpleHttpResponse(client.execute(post));
+	}
+
+	public SimpleHttpResponse delete(String uri)
+			throws ClientProtocolException, IOException {
+		HttpDelete del = new HttpDelete(uri);
+		return new SimpleHttpResponse(client.execute(del));
+	}
+
+	public SimpleHttpResponse delete(String uri, Object... params)
+			throws ClientProtocolException, IOException {
+		return delete(formatURI(uri, params));
 	}
 
 	protected static String formatURI(String uri, Object... params) {
