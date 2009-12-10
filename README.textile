@@ -65,50 +65,50 @@ h3. Usage Examples (Java)
 Similar Example to the above, but in Java.
 
 <pre><code>
-package tests;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.apache.http.client.ClientProtocolException;
 import org.villane.shttpc.Http;
+import org.villane.shttpc.IterableNodeList;
 import org.villane.shttpc.SimpleHttpResponse;
+import org.villane.shttpc.SimpleXPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class MetacriticTestJava {
 
-	public static void main(String[] args) throws ClientProtocolException, IOException,
-			ParserConfigurationException, SAXException, XPathExpressionException {
+	public static class Result {
+		public final String name;
+		public final String url;
+		public final Integer score;
+
+		public Result(String name, String url, Integer score) {
+			this.name = name;
+			this.url = url;
+			this.score = score;
+		}
+	}
+
+	public static Result feelingLucky(String query) throws Exception {
 		Http http = new Http();
-		String query = "Brutal Legend";
-		SimpleHttpResponse response = http.get(
-			"http://www.metacritic.com/search/process?sort=relevance&termtype=all&ts="
-			 + URLEncoder.encode(query, "UTF-8")
-			 + "&ty=0"
-		);
+		SimpleHttpResponse response = http.get(	"http://www.metacritic.com/search/process"
+				+ "?sort=relevance&termtype=all&ts={}&ty=0", query);
 		Document html = response.asDomHtml();
-		XPathFactory factory = XPathFactory.newInstance();
-		XPath xPath = factory.newXPath();
-		NodeList nl = (NodeList) xPath.evaluate(
-			"/HTML/BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P",
-			html,
-			XPathConstants.NODESET
-		);
-		for (int i = 0; i < nl.getLength(); i++) {
-			Node node = nl.item(i);
+		IterableNodeList ps = SimpleXPath.evalNodeList(html,
+				"/HTML/BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P");
+		Node p = null;
+		for (Node node : ps) {
 			if (node.getTextContent().startsWith("1.")) {
-				System.out.println(node.getTextContent());
+				p = node;
+				break;
 			}
 		}
+		return new Result(
+				SimpleXPath.evalNode(p, "A").getTextContent(),
+				SimpleXPath.evalString(p, "A/@href"),
+				SimpleXPath.evalNumber(p, "SPAN/text()").intValue()
+		);
+	}
+
+	public static void main(String[] args) throws Exception {
+		System.out.println(feelingLucky("Brutal Legend").score);
 	}
 }
 </code></pre>
