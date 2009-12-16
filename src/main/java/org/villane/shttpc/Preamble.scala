@@ -19,6 +19,16 @@ object Preamble {
       response.consume
       xml
     }
+
+    def header(name: String) = response.response.getFirstHeader(name) match {
+      case null => None
+      case h => Some(h)
+    }
+
+    def getRedirect = header("Location") match {
+      case Some(loc) => Some((response.statusCode, loc.getValue))
+      case None => None
+    }
   }
 
   implicit def richHttpResponse(r: SimpleHttpResponse) = new RichHttpResponse(r)

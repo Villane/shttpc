@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.cyberneko.html.parsers.DOMParser;
@@ -21,6 +22,22 @@ public class SimpleHttpResponse {
 
 	public SimpleHttpResponse(HttpResponse response) {
 		this.response = response;
+	}
+
+	public Header[] headers() {
+		return response.getAllHeaders();
+	}
+
+	public Header[] headers(String name) {
+		return response.getHeaders(name);
+	}
+
+	public int statusCode() {
+		return response.getStatusLine().getStatusCode();
+	}
+
+	public String reasonPhrase() {
+		return response.getStatusLine().getReasonPhrase();
 	}
 
 	public InputStream asInputStream() throws IOException {
