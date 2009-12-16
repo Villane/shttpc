@@ -20,4 +20,14 @@ class RichHttpResponse(val response: SimpleHttpResponse) {
 		response.consume
 		xml
     }
+
+	def header(name: String) = response.response.getFirstHeader(name) match {
+      case null => None
+      case h => Some(h)
+    }
+
+    def getRedirect = header("Location") match {
+      case Some(loc) => Some((response.statusCode, loc.getValue))
+      case None => None
+    }
 }
