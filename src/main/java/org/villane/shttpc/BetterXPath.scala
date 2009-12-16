@@ -1,6 +1,6 @@
 package org.villane.shttpc
 
-import scala.xml._
+import xml._
 
 object BetterXPath {
   implicit def betterXPath(node: NodeSeq) = new BetterXPath(node)

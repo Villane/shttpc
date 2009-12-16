@@ -1,22 +1,33 @@
 package org.villane.shttpc
 
-import scala.xml._
-import scala.xml.parsing._
+import xml._
+import xml.factory._
 import org.xml.sax.InputSource
-import org.cyberneko.html.parsers.SAXParser
 
-object NekoHTML extends NoBindingFactoryAdapter {
+object NekoHTML extends XMLLoader[Elem] {
 
-  override def loadXML(source: InputSource): Elem = {
-    val parser = new SAXParser
-    scopeStack.push(TopScope)
-    parser.setContentHandler(this)
-    parser.setEntityResolver(this)
-    parser.setErrorHandler(this)
-    parser.setDTDHandler(this)
-    parser.parse(source.asInstanceOf[org.xml.sax.InputSource])
-    scopeStack.pop
-    rootElem.asInstanceOf[Elem]
+  def nekoParser = {
+	  val parser = new org.cyberneko.html.parsers.SAXParser
+	  parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower")
+	  parser
+  }
+
+  /**
+   * Note: Ignores the second argument.
+   */
+  override def loadXML(source: InputSource, parser: javax.xml.parsers.SAXParser): Elem = {
+    val newAdapter = adapter
+    val p = nekoParser
+
+    newAdapter.scopeStack push TopScope
+    p.setContentHandler(newAdapter)
+    p.setEntityResolver(newAdapter)
+    p.setErrorHandler(newAdapter)
+    p.setDTDHandler(newAdapter)
+    p.parse(source)
+    newAdapter.scopeStack.pop
+    
+    newAdapter.rootElem.asInstanceOf[Elem]
   }
 
 }

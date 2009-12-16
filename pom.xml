@@ -5,12 +5,14 @@
 	<artifactId>shttpc</artifactId>
 	<version>0.1.2-SNAPSHOT</version>
 	<name>Simple HTTP Client</name>
-	<description>Simple HTTP Client, wraps Apache HttpClient 4.0 to provide an easy to use Scala API</description>
+	<description>Simple HTTP Client, wraps Apache HttpClient 4.0 to provide
+		an easy to use Scala API</description>
 	<url>http://github.com/Villane/shttpc</url>
 	<scm>
 		<url>http://github.com/Villane/shttpc/tree/master</url>
 		<connection>scm:git:git://github.com/Villane/shttpc.git</connection>
-		<developerConnection>scm:git:git@github.com:Villane/shttpc.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:Villane/shttpc.git
+		</developerConnection>
 	</scm>
 	<dependencies>
 		<dependency>
@@ -34,6 +36,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.5.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ccil.cowan.tagsoup</groupId>
+			<artifactId>tagsoup</artifactId>
+			<version>1.2</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<repositories>
