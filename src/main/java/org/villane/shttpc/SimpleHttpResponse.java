@@ -11,12 +11,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.MappingJsonFactory;
-import org.codehaus.jackson.type.TypeReference;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -25,8 +23,7 @@ import org.xml.sax.SAXException;
 public class SimpleHttpResponse {
 	public static final String DefaultEncoding = "UTF-8";
 	public final HttpResponse response;
-	private JsonFactory jsonFactory = null;
-	private MappingJsonFactory mappingJsonFactory = null;
+	private MappingJsonFactory jsonFactory = null;
 
 	public SimpleHttpResponse(HttpResponse response) {
 		this.response = response;
@@ -93,30 +90,23 @@ public class SimpleHttpResponse {
 
 	public JsonNode asJackson() throws JsonParseException, IOException {
 		if (jsonFactory == null) {
-			jsonFactory = new JsonFactory();
+			jsonFactory = new MappingJsonFactory();
 		}
 		JsonParser jsonParser = jsonFactory.createJsonParser(asInputStream());
-		return jsonParser.readValueAsTree();
+		JsonNode value = jsonParser.readValueAsTree();
+		response.getEntity().consumeContent();
+		return value;
 	}
 
 	public <T> T mapWithJackson(Class<T> t) throws JsonParseException,
 			IOException {
-		if (mappingJsonFactory == null) {
-			mappingJsonFactory = new MappingJsonFactory();
+		if (jsonFactory == null) {
+			jsonFactory = new MappingJsonFactory();
 		}
-		JsonParser jsonParser = mappingJsonFactory
-				.createJsonParser(asInputStream());
-		return jsonParser.readValueAs(t);
-	}
-
-	public <T> T mapWithJackson(TypeReference<?> t) throws JsonParseException,
-			IOException {
-		if (mappingJsonFactory == null) {
-			mappingJsonFactory = new MappingJsonFactory();
-		}
-		JsonParser jsonParser = mappingJsonFactory
-				.createJsonParser(asInputStream());
-		return jsonParser.readValueAs(t);
+		JsonParser jsonParser = jsonFactory.createJsonParser(asInputStream());
+		T value = jsonParser.readValueAs(t);
+		response.getEntity().consumeContent();
+		return value;
 	}
 
 	public String declaredCharSet() {

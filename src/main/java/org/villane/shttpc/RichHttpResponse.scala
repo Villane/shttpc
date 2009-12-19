@@ -2,6 +2,7 @@ package org.villane.shttpc
 
 import xml._
 import xml.factory.XMLLoader
+import net.liftweb.json._
 
 /**
  * Adds convenience methods to SimpleHttpResponse. Should be used only via implicit conversions
@@ -20,6 +21,8 @@ class RichHttpResponse(val response: SimpleHttpResponse) {
 		response.consume
 		xml
     }
+
+	def asJson: JsonAST.JValue = JsonParser.parse(response.asText)
 
 	def header(name: String) = response.response.getFirstHeader(name) match {
       case null => None
