@@ -94,7 +94,7 @@ public class MetacriticTestJava {
 				+ "?sort=relevance&termtype=all&ts={}&ty=0", query);
 		Document html = response.asDomHtml();
 		IterableNodeList ps = SimpleXPath.evalNodeList(html,
-				"/html/body/div[@id='pagecontainer']/div/table/tbody/tr/td[@id='rightcolumn']/p");
+				"/HTML/BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P");
 		Node p = null;
 		for (Node node : ps) {
 			if (node.getTextContent().startsWith("1.")) {
@@ -103,9 +103,9 @@ public class MetacriticTestJava {
 			}
 		}
 		return new Result(
-				SimpleXPath.evalNode(p, "a").getTextContent(),
-				SimpleXPath.evalString(p, "a/@href"),
-				SimpleXPath.evalNumber(p, "span/text()").intValue()
+				SimpleXPath.evalNode(p, "A").getTextContent(),
+				SimpleXPath.evalString(p, "A/@href"),
+				SimpleXPath.evalNumber(p, "SPAN/text()").intValue()
 		);
 	}
 

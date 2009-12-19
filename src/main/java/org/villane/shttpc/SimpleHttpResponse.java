@@ -80,9 +80,6 @@ public class SimpleHttpResponse {
 	public Document asDomHtml() throws IOException,
 			ParserConfigurationException, SAXException {
 		DOMParser parser = new DOMParser();
-		parser.setProperty(
-				"http://apache.org/xml/properties/dom/document-class-name",
-				"org.apache.html.dom.HTMLDocumentImpl");
 		parser.parse(new InputSource(response.getEntity().getContent()));
 		response.getEntity().consumeContent();
 		return parser.getDocument();
