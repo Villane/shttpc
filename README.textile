@@ -11,13 +11,14 @@ The project name *shttpc* is pronounced like ShittyPC.
 
 A "Maven repository":http://villane.org/mavenrepo/org/villane/shttpc/ at villane.org contains both sources and binaries. 
 
+*Maven note:* you will have to add SHTTPC's optional Maven dependencies to your own POM, they won't get transitively resolved (they are marked optional because it's annoying to transitively get a bunch of libraries that you don't need)
+
 h3. Usage examples (Scala)
 
 h4. GET with params Map, comprehensions with NekoHTML parsed to Scala's XML Nodes
 
 <pre><code>
 import org.villane.shttpc._
-import org.villane.shttpc.Preamble._
 
 object MetacriticTest {
   val http = new Http
@@ -33,15 +34,15 @@ object MetacriticTest {
     )).asHtml
 
     val res = for {
-      div <- html \ "BODY" \ "DIV"
+      div <- html \ "body" \ "div"
       if (div \ "@id" == "pagecontainer")
-      col <- div \ "DIV" \ "TABLE" \ "TBODY" \ "TR" \ "TD"
+      col <- div \ "div" \ "table" \ "tbody" \ "tr" \ "td"
       if (col \ "@id" == "rightcolumn")
-      p <- col \ "P"
+      p <- col \ "p"
       if (p.text.startsWith("1."))
     } yield p
 
-    Result(res \ "A" text, res \ "A" \ "@href" text, (res \ "SPAN" text).toInt)
+    Result(res \ "a" text, res \ "a" \ "@href" text, (res \ "span" text).toInt)
   }
 
   def main(sgra: Array[String]) = {
@@ -54,8 +55,9 @@ h4. Alternate comprehension with SHTTPC's XPath support
 
 Note that XPath support is very limited, basically only expressions like the one below are supported.
 <pre><code>
+	import BetterXPath._
     val res = for {
-      p <- html / "BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P"
+      p <- html / "body/div[@id='pagecontainer']/div/table/tbody/tr/td[@id='rightcolumn']/p"
       if (p.text.startsWith("1."))
     } yield p
 </code></pre>
@@ -92,7 +94,7 @@ public class MetacriticTestJava {
 				+ "?sort=relevance&termtype=all&ts={}&ty=0", query);
 		Document html = response.asDomHtml();
 		IterableNodeList ps = SimpleXPath.evalNodeList(html,
-				"/HTML/BODY/DIV[@id='pagecontainer']/DIV/TABLE/TBODY/TR/TD[@id='rightcolumn']/P");
+				"/html/body/div[@id='pagecontainer']/div/table/tbody/tr/td[@id='rightcolumn']/p");
 		Node p = null;
 		for (Node node : ps) {
 			if (node.getTextContent().startsWith("1.")) {
@@ -101,9 +103,9 @@ public class MetacriticTestJava {
 			}
 		}
 		return new Result(
-				SimpleXPath.evalNode(p, "A").getTextContent(),
-				SimpleXPath.evalString(p, "A/@href"),
-				SimpleXPath.evalNumber(p, "SPAN/text()").intValue()
+				SimpleXPath.evalNode(p, "a").getTextContent(),
+				SimpleXPath.evalString(p, "a/@href"),
+				SimpleXPath.evalNumber(p, "span/text()").intValue()
 		);
 	}
 
