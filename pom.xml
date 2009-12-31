@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.villane.shttpc</groupId>
 	<artifactId>shttpc</artifactId>
-	<version>0.2.0</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<name>Simple HTTP Client</name>
 	<description>Simple HTTP Client, wraps Apache HttpClient 4.0 to provide
 		an easy to use Scala API</description>
@@ -171,5 +171,9 @@
 			<name>http://villane.org/mavenrepo repository</name>
 			<url>scp://villane.org/home/villane/villane.org/mavenrepo</url>
 		</repository>
+		<snapshotRepository>
+			<id>scala-tools.org</id>
+			<url>http://nexus.scala-tools.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 </project>
