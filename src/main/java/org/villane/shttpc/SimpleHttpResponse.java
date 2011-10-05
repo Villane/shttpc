@@ -52,14 +52,14 @@ public class SimpleHttpResponse {
 	public byte[] asBytes() throws IOException {
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		response.getEntity().writeTo(buf);
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 		return buf.toByteArray();
 	}
 
 	public String asText(String encoding) throws IOException {
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		response.getEntity().writeTo(buf);
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 		return buf.toString(encoding);
 	}
 
@@ -68,20 +68,18 @@ public class SimpleHttpResponse {
 		return enc != null ? asText(enc) : asText(DefaultEncoding);
 	}
 
-	public Document asDomXml() throws IOException,
-			ParserConfigurationException, SAXException {
+	public Document asDomXml() throws IOException, ParserConfigurationException, SAXException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(response.getEntity().getContent());
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 		return doc;
 	}
 
-	public Document asDomHtml() throws IOException,
-			ParserConfigurationException, SAXException {
+	public Document asDomHtml() throws IOException, ParserConfigurationException, SAXException {
 		DOMParser parser = new DOMParser();
 		parser.parse(new InputSource(response.getEntity().getContent()));
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 		return parser.getDocument();
 	}
 
@@ -91,18 +89,17 @@ public class SimpleHttpResponse {
 		}
 		JsonParser jsonParser = jsonFactory.createJsonParser(asInputStream());
 		JsonNode value = jsonParser.readValueAsTree();
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 		return value;
 	}
 
-	public <T> T mapWithJackson(Class<T> t) throws JsonParseException,
-			IOException {
+	public <T> T mapWithJackson(Class<T> t) throws JsonParseException, IOException {
 		if (jsonFactory == null) {
 			jsonFactory = new MappingJsonFactory();
 		}
 		JsonParser jsonParser = jsonFactory.createJsonParser(asInputStream());
 		T value = jsonParser.readValueAs(t);
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 		return value;
 	}
 
@@ -111,7 +108,7 @@ public class SimpleHttpResponse {
 	}
 
 	public void consume() throws IOException {
-		response.getEntity().consumeContent();
+		EntityUtils.consume(response.getEntity());
 	}
 
 }

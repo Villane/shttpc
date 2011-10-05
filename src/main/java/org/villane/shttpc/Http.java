@@ -89,7 +89,7 @@ public class Http {
 			for (int i = 0; i < params.length; i++) {
 				encodedParams[i] = uriEncode(params[i].toString());
 			}
-			return MessageFormatter.arrayFormat(uri, encodedParams);
+			return MessageFormatter.arrayFormat(uri, encodedParams).getMessage();
 		}
 		return uri;
 	}
