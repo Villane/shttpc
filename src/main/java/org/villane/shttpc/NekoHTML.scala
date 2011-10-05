@@ -7,9 +7,9 @@ import org.xml.sax.InputSource
 object NekoHTML extends XMLLoader[Elem] {
 
   def nekoParser = {
-	  val parser = new org.cyberneko.html.parsers.SAXParser
-	  parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower")
-	  parser
+    val parser = new org.cyberneko.html.parsers.SAXParser
+    parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower")
+    parser
   }
 
   /**
@@ -26,7 +26,7 @@ object NekoHTML extends XMLLoader[Elem] {
     p.setDTDHandler(newAdapter)
     p.parse(source)
     newAdapter.scopeStack.pop
-    
+
     newAdapter.rootElem.asInstanceOf[Elem]
   }
 

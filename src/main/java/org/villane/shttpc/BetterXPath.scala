@@ -7,8 +7,8 @@ object BetterXPath {
 }
 
 /**
- * Supports a subset of XPath expressions in the form of 
- * 
+ * Supports a subset of XPath expressions in the form of
+ *
  * /tag1/tag2[@attr='stringLiteral']/tag2
  * /tag1/tag2[tag4=@attr2]/tag2
  */
@@ -24,7 +24,7 @@ class BetterXPath(node: NodeSeq) {
     } else if (path.contains("[")) {
       val segs = path.split("[\\[\\]]")
       val ns = node \ segs(0)
-      val Array(left,right) = segs(1).split("=")
+      val Array(left, right) = segs(1).split("=")
       ns filter { n =>
         evaluatePredicate(n, left) == evaluatePredicate(n, right)
       }
@@ -41,5 +41,5 @@ class BetterXPath(node: NodeSeq) {
       // usual attribute or element name
       n \ expr
     }
-  } 
+  }
 }

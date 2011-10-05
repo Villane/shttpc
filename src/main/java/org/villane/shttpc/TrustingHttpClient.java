@@ -22,52 +22,52 @@ import org.apache.http.params.HttpParams;
  */
 public class TrustingHttpClient extends DefaultHttpClient {
 
-	public static final class BlindTrustStrategy implements TrustStrategy {
+  public static final class BlindTrustStrategy implements TrustStrategy {
 
-		@Override
-		public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-			return true;
-		}
+    @Override
+    public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+      return true;
+    }
 
-	}
+  }
 
-	@Override
-	protected ClientConnectionManager createClientConnectionManager() {
-		SchemeRegistry registry = new SchemeRegistry();
-		try {
-			SSLSocketFactory naiveSocketFactory = new SSLSocketFactory(new BlindTrustStrategy(),
-					SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-			registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
-			registry.register(new Scheme("https", 443, naiveSocketFactory));
-		} catch (Exception e) {
-			throw new RuntimeException("Unable to create naive SSLSocketFactory", e);
-		}
+  @Override
+  protected ClientConnectionManager createClientConnectionManager() {
+    SchemeRegistry registry = new SchemeRegistry();
+    try {
+      SSLSocketFactory naiveSocketFactory = new SSLSocketFactory(new BlindTrustStrategy(),
+          SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+      registry.register(new Scheme("http", 80, PlainSocketFactory.getSocketFactory()));
+      registry.register(new Scheme("https", 443, naiveSocketFactory));
+    } catch (Exception e) {
+      throw new RuntimeException("Unable to create naive SSLSocketFactory", e);
+    }
 
-		ClientConnectionManager connManager = null;
-		HttpParams params = getParams();
+    ClientConnectionManager connManager = null;
+    HttpParams params = getParams();
 
-		ClientConnectionManagerFactory factory = null;
+    ClientConnectionManagerFactory factory = null;
 
-		String className = (String) params.getParameter(ClientPNames.CONNECTION_MANAGER_FACTORY_CLASS_NAME);
-		if (className != null) {
-			try {
-				Class<?> clazz = Class.forName(className);
-				factory = (ClientConnectionManagerFactory) clazz.newInstance();
-			} catch (ClassNotFoundException ex) {
-				throw new IllegalStateException("Invalid class name: " + className);
-			} catch (IllegalAccessException ex) {
-				throw new IllegalAccessError(ex.getMessage());
-			} catch (InstantiationException ex) {
-				throw new InstantiationError(ex.getMessage());
-			}
-		}
-		if (factory != null) {
-			connManager = factory.newInstance(params, registry);
-		} else {
-			connManager = new SingleClientConnManager(registry);
-		}
+    String className = (String) params.getParameter(ClientPNames.CONNECTION_MANAGER_FACTORY_CLASS_NAME);
+    if (className != null) {
+      try {
+        Class<?> clazz = Class.forName(className);
+        factory = (ClientConnectionManagerFactory) clazz.newInstance();
+      } catch (ClassNotFoundException ex) {
+        throw new IllegalStateException("Invalid class name: " + className);
+      } catch (IllegalAccessException ex) {
+        throw new IllegalAccessError(ex.getMessage());
+      } catch (InstantiationException ex) {
+        throw new InstantiationError(ex.getMessage());
+      }
+    }
+    if (factory != null) {
+      connManager = factory.newInstance(params, registry);
+    } else {
+      connManager = new SingleClientConnManager(registry);
+    }
 
-		return connManager;
-	}
+    return connManager;
+  }
 
 }
